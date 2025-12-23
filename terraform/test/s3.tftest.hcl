@@ -1,19 +1,21 @@
-run "apply_ok" {
+run "apply_ok_good_policy" {
   command = apply
 
   variables {
-    bucket_name = "mi-bucket-prueba-1234567890"
+    bucket_prefix          = "mi-bucket-prueba"
+    use_correct_object_arn = true
   }
 }
 
-run "apply_rejected_by_precondition" {
+run "apply_fails_bad_policy_expected" {
   command = apply
 
   variables {
-    bucket_name = "BAD_BUCKET_NAME"
+    bucket_prefix          = "mi-bucket-prueba"
+    use_correct_object_arn = false
   }
 
   expect_failures = [
-    aws_s3_bucket.this
+    aws_s3_bucket_policy.this
   ]
 }
