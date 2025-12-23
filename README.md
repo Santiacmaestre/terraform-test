@@ -1,17 +1,17 @@
 # Terraform S3 Bucket Policy Testing with `terraform test`
 
-This repository shows a **practical and realistic way to test Terraform modules against real AWS behavior**, using Terraform’s native **`terraform test`** framework.
+This repository shows a practical and realistic way to test Terraform modules against real AWS behavior, using Terraform’s native `terraform test` framework.
 
-The goal is not only to test “happy paths”, but to **learn from real AWS errors**, then **harden the module** so those mistakes are caught earlier and more deterministically.
+The goal is not only to test “happy paths”, but to learn from real AWS errors, then harden the module so those mistakes are caught earlier and more deterministically.
 
 ## What this repository is about
 
 This repo provisions:
 
-- A real **S3 bucket**
-- A **bucket policy** generated with `aws_iam_policy_document`
-- A toggleable input that makes the policy **correct or incorrect**
-- Tests that run **real `terraform apply` operations** against AWS
+- A real S3 bucket
+- A bucket policy generated with `aws_iam_policy_document`
+- A toggleable input that makes the policy correct or incorrect
+- Tests that run real `terraform apply` operations against AWS
 
 The focus is on a very common class of issues:
 
@@ -35,7 +35,7 @@ Examples:
 - Policies that are syntactically valid but semantically wrong
 - Security controls enforced at the account or service level
 
-The first time these issues appear, **AWS is the source of truth**.
+The first time these issues appear, AWS is the source of truth.
 
 Running tests against real AWS lets you:
 - See the exact error returned by AWS
@@ -44,21 +44,20 @@ Running tests against real AWS lets you:
 
 ### 2. Harden the module with preconditions
 
-Once an AWS failure is understood, the module is **hardened**:
+Once an AWS failure is understood, the module is hardened:
 
 - The learned constraint is encoded as a `precondition`
 - The failure moves from AWS → Terraform
 - The error becomes deterministic and intentional
-- The mistake is caught **earlier**, before the API call
+- The mistake is caught `earlier`, before the API call
 
 This turns:
-- Late, surprising apply-time failures  
-into  
+- Late, surprising apply-time failures into
 - Early, clear, actionable feedback
 
 ### 3. Why preconditions are required for tests
 
-Terraform’s test framework **cannot assert provider or API errors directly**.
+Terraform’s test framework cannot assert provider or API errors directly.
 
 If AWS rejects an operation:
 - The test fails immediately
@@ -71,20 +70,19 @@ By encoding known AWS failure modes as `precondition`s:
 - Module behavior is documented in code
 
 ## How the tests work
-
 The tests run two scenarios:
 
-1. **Valid input**
+1. Valid input
    - The bucket and policy are created successfully
    - The apply passes
    - Resources are destroyed after the test
 
-2. **Invalid input**
+2. Invalid input
    - The policy is intentionally wrong
    - The module’s precondition fails
    - The failure is expected and asserted
 
-Both scenarios run against **real AWS**, using a **temporary, isolated state** created by `terraform test`.
+Both scenarios run against real AWS, using a temporary, isolated state created by `terraform test`.
 
 Your existing infrastructure state is never touched.
 
@@ -124,13 +122,19 @@ Prevent the mistake everywhere
 
 ## Key takeaway
 
-* AWS errors are **not avoided**
-* They are **observed, understood, and codified**
+* AWS errors are not avoided
+* They are observed, understood, and codified
 * `terraform test` is used to lock that knowledge in place
 
 The result is infrastructure code that:
-
 * Fails earlier
 * Fails clearer
 * Is safer to reuse
 * Encodes real AWS behavior, not assumptions
+
+<div align="right">
+- -
+
+*Made with ❤️ by Santiacmaestre 🚀*
+
+</div>
